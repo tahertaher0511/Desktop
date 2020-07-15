@@ -1,0 +1,138 @@
+# This game created By Taher mohamed ismail 12 july 2020.
+# global variables
+game_still_going = True
+winner = None
+current_player = 'X'
+board = [' ', ' ', ' ',
+         ' ', ' ', ' ',
+         ' ', ' ', ' ']
+
+
+def display_board():
+    print('_________')
+    print('| ' + board[0] + ' ' + board[1] + ' ' + board[2] + ' |' + '                      1 3  ,  2 3  ,  3 3')
+    print('| ' + board[3] + ' ' + board[4] + ' ' + board[5] + ' |' + '                      1 2  ,  2 2  ,  3 2')
+    print('| ' + board[6] + ' ' + board[7] + ' ' + board[8] + ' |' + '                      1 1  ,  2 1  ,  3 1')
+    print('_________')
+
+
+def play_game():
+    display_board()
+
+    while game_still_going:
+        process_input()
+        check_if_game_over()
+        flip_player()
+    # the game has ended
+    if winner == 'X' or winner == 'O':
+        print(winner, 'wins')
+    elif winner is None:
+        print('Draw!')
+
+
+def check_if_game_over():
+    check_if_win()
+    check_if_draw()
+
+
+def check_if_win():
+    # set up global variables
+    global winner
+    # check rows
+    rows_winner = check_rows()
+    # check columns
+    columns_winner = check_columns()
+    # check diagonals
+    diagnoal_winner = check_diagonals()
+    if rows_winner:
+        winner = rows_winner
+    elif columns_winner:
+        winner = columns_winner
+    elif diagnoal_winner:
+        winner = diagnoal_winner
+    else:
+        winner = None
+
+
+def check_rows():
+    global game_still_going
+    row_1 = board[0] == board[1] == board[2] != ' '
+    row_2 = board[3] == board[4] == board[5] != ' '
+    row_3 = board[6] == board[7] == board[8] != ' '
+    if row_1 or row_2 or row_3:
+        game_still_going = False
+    if row_1:
+        return board[0]
+    elif row_2:
+        return board[3]
+    elif row_3:
+        return board[6]
+
+
+def check_columns():
+    global game_still_going
+    columns_1 = board[0] == board[3] == board[6] != ' '
+    columns_2 = board[1] == board[4] == board[7] != ' '
+    columns_3 = board[2] == board[5] == board[8] != ' '
+    if columns_1 or columns_2 or columns_3:
+        game_still_going = False
+    if columns_1:
+        return board[0]
+    elif columns_2:
+        return board[1]
+    elif columns_3:
+        return board[2]
+
+
+def check_diagonals():
+    global game_still_going
+    diagonals_1 = board[0] == board[4] == board[8] != ' '
+    diagonals_2 = board[2] == board[4] == board[6] != ' '
+    if diagonals_1 or diagonals_2:
+        game_still_going = False
+    if diagonals_1:
+        return board[0]
+    elif diagonals_2:
+        return board[2]
+
+
+def check_if_draw():
+    global game_still_going
+    if ' ' not in board:
+        game_still_going = False
+    return
+
+
+def process_input():
+    # Get position from player
+    print(current_player + "'s turn.")
+    while True:
+        try:
+            input_coordinate = input('Enter the coordinates:').split()
+            if input_coordinate[0].isnumeric() is False or input_coordinate[1].isnumeric() is False:
+                print("You should enter numbers!")
+            else:
+                x = int(input_coordinate[0])
+                y = int(input_coordinate[1])
+                if (1 <= x <= 3) and (1 <= y <= 3):
+                    if board[(3 - y) * 3 + (x - 1)] == ' ':
+                        board[(3 - y) * 3 + (x - 1)] = current_player
+                        display_board()
+                        break
+                    else:
+                        print('This cell is occupied! Choose another one!')
+                else:
+                    print('Coordinates should be from 1 to 3!')
+        except IndexError or NameError or ValueError:
+            print('Coordinates should be from 1 to 3!')
+
+
+def flip_player():
+    global current_player
+    if current_player == 'X':
+        current_player = 'O'
+    elif current_player == 'O':
+        current_player = 'X'
+
+
+play_game()
